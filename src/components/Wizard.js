@@ -81,17 +81,24 @@ class Wizard extends Component {
 
   init = steps => {
     this.setState({ steps }, () => {
-      const step = this.pathToStep(this.history.location.pathname);
+      const {replace, location: {search, pathname}} = this.history;
+      const step = this.pathToStep(pathname);
       if (step.id) {
         this.setState({ step });
       } else {
-        this.history.replace(`${this.basename}${this.ids[0]}`);
+        replace(`${this.basename}${this.ids[0]}${search}`);
       }
     });
   };
 
-  push = (step = this.nextStep) => this.history.push(`${this.basename}${step}`);
-  replace = (step = this.nextStep) => this.history.replace(`${this.basename}${step}`);
+  push = (step = this.nextStep) => {
+    const {push, location: {search}} = this.history;
+    push(`${this.basename}${step}${search}`);
+  };
+  replace = (step = this.nextStep) =>{
+    const {replace, location: {search}} = this.history;
+    replace(`${this.basename}${step}${search}`);
+  };
 
   next = () => {
     if (this.props.onNext) {
